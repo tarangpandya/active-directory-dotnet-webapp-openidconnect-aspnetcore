@@ -57,7 +57,7 @@ namespace WebApp_OpenIDConnect_DotNet
             {
                 ClientId = Configuration["AzureAD:ClientId"],
                 Authority = String.Format(Configuration["AzureAd:AadInstance"], Configuration["AzureAd:Tenant"]),
-                ResponseType = OpenIdConnectResponseTypes.IdToken,
+                ResponseType = OpenIdConnectResponseType.IdToken,
                 PostLogoutRedirectUri = Configuration["AzureAd:PostLogoutRedirectUri"],
                 Events = new OpenIdConnectEvents
                 {
