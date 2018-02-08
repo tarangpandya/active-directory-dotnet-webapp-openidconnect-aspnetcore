@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace WebApp_OpenIDConnect_DotNet.Controllers
 {
@@ -10,7 +7,8 @@ namespace WebApp_OpenIDConnect_DotNet.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            var claims = ((ClaimsIdentity)User.Identity).Claims;
+            return View(claims);
         }
 
         public IActionResult About()

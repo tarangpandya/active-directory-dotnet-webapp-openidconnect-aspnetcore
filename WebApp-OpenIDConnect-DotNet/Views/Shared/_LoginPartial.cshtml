@@ -1,15 +1,19 @@
 ﻿@using System.Security.Principal
-
+@using System.Security.Claims
+@{
+    var claims = ((ClaimsIdentity)User.Identity).Claims;
+    var name = claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+}
 @if (User.Identity.IsAuthenticated)
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li><a>Hello, @User.Identity.Name</a></li>
-        <li>@Html.ActionLink("Log Out", "LogOff", "Account")</li>
-    </ul>
+<ul class="nav navbar-nav navbar-right">
+    <li><a>Hello, @name!</a></li>
+    <li>@Html.ActionLink("Log Out", "LogOff", "Account")</li>
+</ul>
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-    </ul>
+<ul class="nav navbar-nav navbar-right">
+    <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+</ul>
 }

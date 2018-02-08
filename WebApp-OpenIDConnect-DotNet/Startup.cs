@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System;
+using System.Threading.Tasks;
 
 namespace WebApp_OpenIDConnect_DotNet
 {
@@ -18,12 +16,23 @@ namespace WebApp_OpenIDConnect_DotNet
     {
         public Startup(IHostingEnvironment env)
         {
+
+            var builder = new ConfigurationBuilder()
+                 .SetBasePath(env.ContentRootPath)
+                 .AddJsonFile("config.json")
+                 .AddJsonFile("appsettings.json");
+
+
+            if (env.IsDevelopment())
+            {
+                //secrets.json file is stored here - C:\Users\Win10Admin\AppData\Roaming\Microsoft\UserSecrets\66febe54-1225-4b7c-b9f6-e4e93f6640de\secrets.json
+                builder.AddUserSecrets();
+            }
+
+            builder.AddEnvironmentVariables();
+
             // Set up configuration sources.
-            Configuration = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("config.json")
-                .AddJsonFile("appsettings.json")
-                .Build();
+            Configuration = builder.Build();
         }
 
         public IConfigurationRoot Configuration { get; set; }
@@ -63,7 +72,9 @@ namespace WebApp_OpenIDConnect_DotNet
                 Events = new OpenIdConnectEvents
                 {
                     OnRemoteFailure = OnAuthenticationFailed,
-                }
+                    OnUserInformationReceived = OnUserRetrieved
+
+                },
             });
 
             // Configure MVC routes
@@ -82,5 +93,12 @@ namespace WebApp_OpenIDConnect_DotNet
             context.Response.Redirect("/Home/Error?message=" + context.Failure.Message);
             return Task.FromResult(0);
         }
+
+        private Task OnUserRetrieved(UserInformationReceivedContext context)
+        {
+            var ctx = context;
+            return Task.FromResult(0);
+        }
+
     }
 }
